@@ -17,7 +17,7 @@ import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 /**
  * Interop when storing binary content (marshalled objects) in the server
  */
-public class PojoJsonInterop {
+public class MarshalledStorageInterop {
 
    public static void main(String[] args) throws IOException {
       Configuration configuration = new ConfigurationBuilder().build();

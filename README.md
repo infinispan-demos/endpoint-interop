@@ -11,3 +11,11 @@ docker run -v $PWD/../entities/target:/opt/jboss/infinispan-server/standalone/de
 ```
 
 This instructs the server to be started with REST credentials ```dev/dev```, exposing ports ```8080``` and ```11222``` to ```localhost``` and using the configuration file ```client/config/clustered.xml```
+
+### Running the demos
+
+To verify reading/writing data in multiple format when storing POJOs in the server, run the class ```org.infinispan.interop.ObjectStorageInterop```
+
+To verify reading/writing data in multiple format when storing binary (marshalled objects) in the server, run the class ```org.infinispan.interop.MarshalledStorageInterop```
+
+To verify interop between REST and Hot Rod endpoints when storing strings in the cache, run the class ```org.infinispan.interop.StringInterop```
