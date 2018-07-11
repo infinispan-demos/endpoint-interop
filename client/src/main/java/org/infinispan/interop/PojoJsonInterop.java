@@ -5,15 +5,17 @@ import static org.infinispan.commons.dataconversion.MediaType.APPLICATION_JSON_T
 
 import java.io.IOException;
 
+import org.apache.http.StatusLine;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.Configuration;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 
 /**
- * Interop using Java objects for Hot Rod and JSON/XML for REST. Data is stored marshalled.
+ * Interop when storing binary content (marshalled objects) in the server
  */
 public class PojoJsonInterop {
 
@@ -33,10 +35,10 @@ public class PojoJsonInterop {
 
       System.out.println("Cache size after insertion = " + remoteCache.size());
 
-      Executor authExecutor = Executor.newInstance().auth("dev", "dev");
+      Executor requestExecutor = Executor.newInstance().auth("dev", "dev");
 
       // Read from REST as JSON
-      String response = authExecutor
+      String response = requestExecutor
             .execute(Request.Get(String.format("http://%s:%d/rest/%s/%s", "localhost", 8080, cacheName, 20))
                   .addHeader(ACCEPT, APPLICATION_JSON_TYPE)
                   .addHeader("Key-Content-Type", "application/x-java-object;type=java.lang.Integer"))
@@ -44,6 +46,20 @@ public class PojoJsonInterop {
 
       System.out.println("/GET `LTC` as JSON: " + response);
 
+      // Write a new value in JSON format
+      // Write from REST in JSON format
+      String json = "{\"_type\":\"org.infinispan.interop.CryptoCurrency\",\"description\":\"Monero\",\"rank\":20}";
+      StatusLine status = requestExecutor.execute(
+            Request.Post(String.format("http://%s:%d/rest/%s/%s", "localhost", 8080, cacheName, 40))
+                  .addHeader("key-content-type","application/x-java-object; type=java.lang.Integer")
+                  .bodyString(json, ContentType.APPLICATION_JSON))
+            .returnResponse().getStatusLine();
+
+      System.out.println("Inserted new entry in JSON format: " + json + ", status code: " + status);
+
+      // Read from Hot Rod the data inserted via REST
+      CryptoCurrency eth = remoteCache.get(40);
+      System.out.println("Reading as Java Object: " + eth);
    }
 }
 
