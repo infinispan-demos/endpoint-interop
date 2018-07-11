@@ -2,22 +2,10 @@ package org.infinispan.interop;
 
 import java.io.Serializable;
 
-/**
- *
- */
-//@Indexed
-//@ProtoMessage(name = "CryptoCurrency")
-//@ProtoDoc("@Indexed")
 public class CryptoCurrency implements Serializable {
 
-   //   @Field(analyze = Analyze.NO)
-//   @ProtoField(number = 1)
-//   @ProtoDoc("@Field(index = Index.YES, store = Store.NO)")
    public String description;
 
-   //   @Field
-//   @ProtoField(number = 2)
-//   @ProtoDoc("@Field(index = Index.YES, store = Store.NO)")
    public Integer rank;
 
    public CryptoCurrency() {
@@ -34,5 +22,13 @@ public class CryptoCurrency implements Serializable {
 
    public Integer getRank() {
       return rank;
+   }
+
+   @Override
+   public String toString() {
+      return "CryptoCurrency{" +
+            "description='" + description + '\'' +
+            ", rank=" + rank +
+            '}';
    }
 }
