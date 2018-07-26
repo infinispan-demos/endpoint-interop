@@ -15,6 +15,9 @@
             </plugin>
         </plugins>
     </build>
+    <properties>
+        <infinispan.version>9.3.1.Final</infinispan.version>
+    </properties>
 
     <parent>
         <groupId>org.infinispan</groupId>
@@ -31,7 +34,12 @@
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-client-hotrod</artifactId>
-            <version>9.3.0.Final</version>
+            <version>${infinispan.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-remote-query-client</artifactId>
+            <version>${infinispan.version}</version>
         </dependency>
         <dependency>
             <groupId>org.infinispan</groupId>

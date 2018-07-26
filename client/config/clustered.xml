@@ -311,6 +311,9 @@
                         <value media-type="application/x-java-object"/>
                     </encoding>
                 </distributed-cache>
+                <distributed-cache name="indexed">
+                    <indexing index="LOCAL" auto-config="true"/>
+                </distributed-cache>
             </cache-container>
         </subsystem>
         <subsystem xmlns="urn:infinispan:server:endpoint:9.3">

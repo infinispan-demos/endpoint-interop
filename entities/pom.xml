@@ -12,5 +12,11 @@
     <version>1.0-SNAPSHOT</version>
 
     <name>infinispan-sample-interop-entities</name>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.infinispan.protostream</groupId>
+            <artifactId>protostream</artifactId>
+            <version>4.2.0.Final</version>
+        </dependency>
+    </dependencies>
 </project>
