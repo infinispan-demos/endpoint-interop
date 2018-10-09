@@ -285,7 +285,7 @@
                 <provider-sasl-server-factory name="global"/>
             </sasl>
         </subsystem>
-        <subsystem xmlns="urn:infinispan:server:core:9.3" default-cache-container="clustered">
+        <subsystem xmlns="urn:infinispan:server:core:9.4" default-cache-container="clustered">
             <cache-container name="clustered" default-cache="default" statistics="true">
                 <transport lock-timeout="60000"/>
                 <global-state/>
@@ -311,20 +311,35 @@
                         <value media-type="application/x-java-object"/>
                     </encoding>
                 </distributed-cache>
+                <distributed-cache name="json-cache">
+                    <encoding>
+                        <key media-type="application/json"/>
+                        <value media-type="application/json"/>
+                    </encoding>
+                </distributed-cache>
                 <distributed-cache name="indexed">
                     <indexing index="LOCAL" auto-config="true"/>
                 </distributed-cache>
             </cache-container>
         </subsystem>
-        <subsystem xmlns="urn:infinispan:server:endpoint:9.3">
+        <subsystem xmlns="urn:infinispan:server:endpoint:9.4">
             <hotrod-connector socket-binding="hotrod" cache-container="clustered">
                 <topology-state-transfer lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000"/>
             </hotrod-connector>
             <rest-connector socket-binding="rest" cache-container="clustered">
                 <authentication security-realm="ApplicationRealm" auth-method="BASIC"/>
             </rest-connector>
+            <memcached-connector name="memcached" socket-binding="memcached" cache-container="clustered"
+                                 cache="string-cache"/>
+            <memcached-connector name="memcached-2" socket-binding="memcached-2" client-encoding="application/json"
+                                 cache-container="clustered" cache="marshalled-pojo-cache"/>
+            <memcached-connector name="memcached-3" socket-binding="memcached-3" client-encoding="application/json"
+                                 cache-container="clustered" cache="pojo-cache"/>
+            <memcached-connector name="memcached-4" socket-binding="memcached-4" client-encoding="application/json"
+                                 cache-container="clustered" cache="indexed"/>
+            <memcached-connector name="memcached-5" socket-binding="memcached-5" cache-container="clustered" cache="json-cache"/>
         </subsystem>
-        <subsystem xmlns="urn:infinispan:server:jgroups:9.3">
+        <subsystem xmlns="urn:infinispan:server:jgroups:9.4">
             <channels default="cluster">
                 <channel name="cluster"/>
             </channels>
@@ -480,12 +495,15 @@
                         multicast-address="${jboss.default.multicast.address:234.99.54.14}" multicast-port="45688"/>
         <socket-binding name="jgroups-udp-fd" port="54200"/>
         <socket-binding name="memcached" port="11211"/>
+        <socket-binding name="memcached-2" port="11212"/>
+        <socket-binding name="memcached-3" port="11213"/>
+        <socket-binding name="memcached-4" port="11214"/>
+        <socket-binding name="memcached-5" port="11215"/>
         <socket-binding name="rest" port="8080"/>
         <socket-binding name="rest-multi-tenancy" port="8081"/>
         <socket-binding name="rest-ssl" port="8443"/>
         <socket-binding name="txn-recovery-environment" port="4712"/>
         <socket-binding name="txn-status-manager" port="4713"/>
-        <socket-binding name="websocket" port="8181"/>
         <outbound-socket-binding name="remote-store-hotrod-server">
             <remote-destination host="remote-host" port="11222"/>
         </outbound-socket-binding>

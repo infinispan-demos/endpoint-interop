@@ -11,7 +11,7 @@ import org.infinispan.protostream.annotations.ProtoMessage;
 public class CryptoCurrency implements Serializable {
 
    @ProtoField(number = 1)
-   @ProtoDoc("@Field(index = Index.YES, store = Store.NO)")
+   @ProtoDoc("@Field(store = Store.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = \"standard\"))")
    public String description;
 
    @ProtoField(number = 2)

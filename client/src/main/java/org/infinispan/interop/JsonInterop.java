@@ -20,30 +20,37 @@ import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.commons.marshall.UTF8StringMarshaller;
 
 import net.spy.memcached.MemcachedClient;
+
 /**
- * Interop with REST and Hot Rod storing text.
+ * Interoperability using JSON data between REST, Hot Rod, Memcached clients.
  * <p>
- * The Hot Rod Client uses the UTF8StringMarshaller to write keys and values, and REST gets the values as text/plain
  */
-public class StringInterop {
+public class JsonInterop {
 
    public static void main(String[] args) throws Exception {
-      Configuration configuration = new ConfigurationBuilder().marshaller(new UTF8StringMarshaller()).build();
+      UTF8StringMarshaller marshaller = new UTF8StringMarshaller();
+      Configuration configuration = new ConfigurationBuilder().marshaller(marshaller).build();
       RemoteCacheManager remoteCacheManager = new RemoteCacheManager(configuration);
-      MemcachedClient memcachedClient = new MemcachedClient(new InetSocketAddress("localhost", 11211));
 
-      // The 'string-cache' is configured with text/plain for keys and values
-      String cacheName = "string-cache";
+      MemcachedClient memcachedClient = new MemcachedClient(new InetSocketAddress("localhost", 11215));
+
+      // The 'json-cache' is configured with 'application/json' for keys and values
+      String cacheName = "json-cache";
 
       RemoteCache<String, String> cache = remoteCacheManager.getCache(cacheName);
 
       // Write from Hot Rod
-      cache.put("BTC", "Bitcoin");
-      cache.put("LTC", "Litecoin");
-      cache.put("DOG", "Dogecoin");
-      logAction(WRITE, "BTC", "Bitcoin", HOT_ROD);
-      logAction(WRITE, "LTC", "Litecoin", HOT_ROD);
-      logAction(WRITE, "DOG", "Dogecoin", HOT_ROD);
+      String bitcoin = "{\"description\": \"Bitcoin\",\"rank\": 1}";
+      String litecoin = "{\"description\": \"Litecon\",\"rank\": 11}";
+      String dogecoin = "{\"description\": \"Dogecoin\",\"rank\": 1123}";
+
+      cache.put("BTC", bitcoin);
+      cache.put("LTC", litecoin);
+      cache.put("DOG", dogecoin);
+
+      logAction(WRITE, "BTC", bitcoin, HOT_ROD);
+      logAction(WRITE, "LTC", litecoin, HOT_ROD);
+      logAction(WRITE, "DOG", dogecoin, HOT_ROD);
 
       System.out.println("Cache size after insertion from Hot Rod: " + cache.size());
 
@@ -58,7 +65,7 @@ public class StringInterop {
 
       // Writing from REST with a different charset
       Charset shift_jis = Charset.forName("Shift_JIS");
-      String content = "現金";
+      String content = "{\"description\": \"現金\",\"rank\": 12222}";
 
       byte[] encoded = shift_jis.encode(content).array();
 
@@ -70,16 +77,10 @@ public class StringInterop {
 
       // Reading as UTF-8 (this is the default charset)
       byte[] bytes = requestExecutor
-            .execute(Request.Get(String.format("http://%s:%d/rest/%s/%s", "localhost", 8080, cacheName, "ZEC")))
+            .execute(Request.Get(String.format("http://%s:%d/rest/%s/%s", "localhost", 8080, cacheName, "ZEC"))
+                  .addHeader("Accept", "application/json; charset=UTF-8"))
             .returnContent().asBytes();
       logAction(READ, "ZEC", new String(bytes, UTF_8), REST);
-
-      // Reading as Shift_JIS
-      bytes = requestExecutor
-            .execute(Request.Get(String.format("http://%s:%d/rest/%s/%s", "localhost", 8080, cacheName, "ZEC"))
-                  .addHeader("Accept", "text/plain; charset=Shift_JIS"))
-            .returnContent().asBytes();
-      logAction(READ, " `ZEC` as Shift_JIS", new String(bytes, shift_jis.displayName()), REST);
 
       // Read with Memcached
       Object btc = memcachedClient.get("BTC");
@@ -89,10 +90,11 @@ public class StringInterop {
       logAction(READ, "ZEC", zec, MEMCACHED);
 
       // Write with memcached
-      memcachedClient.set("ETH", -1, "Ethereum").get();
-      logAction(WRITE, "ETH", "Ethereum", MEMCACHED);
+      String eth = "{\"description\": \"Ethereum\",\"rank\": 2}";
+      memcachedClient.set("ETH", -1, eth).get();
+      logAction(WRITE, "ETH", eth, MEMCACHED);
 
-      // Read with other endpoints:
+      // Read with other endpoints
       logAction(READ, "ETH", cache.get("ETH"), HOT_ROD);
 
       String res = requestExecutor

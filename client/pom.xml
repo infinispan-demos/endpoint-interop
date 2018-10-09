@@ -8,6 +8,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
                 <configuration>
                     <source>8</source>
                     <target>8</target>
@@ -16,7 +17,7 @@
         </plugins>
     </build>
     <properties>
-        <infinispan.version>9.3.1.Final</infinispan.version>
+        <infinispan.version>9.4.0.Final</infinispan.version>
     </properties>
 
     <parent>
@@ -38,6 +39,11 @@
         </dependency>
         <dependency>
             <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-query-dsl</artifactId>
+            <version>${infinispan.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
             <artifactId>infinispan-remote-query-client</artifactId>
             <version>${infinispan.version}</version>
         </dependency>
@@ -55,6 +61,11 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>fluent-hc</artifactId>
             <version>4.5.5</version>
+        </dependency>
+        <dependency>
+            <groupId>net.spy</groupId>
+            <artifactId>spymemcached</artifactId>
+            <version>2.12.1</version>
         </dependency>
     </dependencies>
 
