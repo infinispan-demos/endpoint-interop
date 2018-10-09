@@ -12,7 +12,7 @@ docker run -v $PWD/entities/target:/opt/jboss/infinispan-server/standalone/deplo
            -v $PWD/client/config:/opt/jboss/infinispan-server/standalone/configuration/demo \
            -p 8080:8080 -p 11211-11222:11211-11222 \
            -e "APP_USER=dev" -e "APP_PASS=dev" -e "JAVA_OPTS=-Dinfinispan.deserialization.whitelist.regexps=.\*" \
-           --name infinispan -d jboss/infinispan-server:9.4.0.CR3 demo/clustered.xml
+           --name infinispan -d jboss/infinispan-server:9.4.0.Final demo/clustered.xml
 
 wait_for_ispn
 
