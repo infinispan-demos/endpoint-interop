@@ -41,4 +41,22 @@ public class CryptoCurrency implements Serializable {
             ", rank=" + rank +
             '}';
    }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      CryptoCurrency that = (CryptoCurrency) o;
+
+      if (!description.equals(that.description)) return false;
+      return rank.equals(that.rank);
+   }
+
+   @Override
+   public int hashCode() {
+      int result = description.hashCode();
+      result = 31 * result + rank.hashCode();
+      return result;
+   }
 }

@@ -12,7 +12,7 @@ docker run -v $PWD/entities/target:/opt/jboss/infinispan-server/standalone/deplo
            -p 8080:8080 -p 11211-11222:11211-11222 \
            -e "APP_USER=dev" -e "APP_PASS=dev" \
            -e "JAVA_OPTS=-Dinfinispan.deserialization.whitelist.regexps=.\*" \
-           --name infinispan -d jboss/infinispan-server:9.4.0.Final demo/clustered.xml
+           --name infinispan -d jboss/infinispan-server:9.4.1.Final demo/clustered.xml
 ```
 
 This instructs the server to be started with credentials ```dev/dev```, exposing ports ```8080``` and ```11211``` to ```11222``` to ```localhost``` and using the configuration file ```client/config/clustered.xml```. It also enables all deserialization in the server.
